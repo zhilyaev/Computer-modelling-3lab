@@ -20,6 +20,7 @@ class Part2:
         # Computing vars
         self.flow = self.flows2flow(self.generate())
         [self.countInRange, self.uniqueList] = self.catch_in_interval()
+        self.lambda_t = sum(self.flow) / sum(self.countInRange)
         self.theoreticalN = self.theoretical()
 
     # Генерим из первой части 50 потоков
@@ -82,7 +83,6 @@ class Part2:
 
             self.flow[:] = [f / 10 for f in self.flow]
 
-        # print("count in range: ", uniqeList)
         return [c, u]
 
     # Все в один поток
@@ -97,10 +97,9 @@ class Part2:
     def theoretical(self):
         n_theories = []
         n_sum = sum(self.countInRange)
-        lambda_t = sum(self.flow) / sum(self.countInRange)
 
         for n in self.uniqueList:
-            p = pow(lambda_t, n) / math.factorial(n) * pow(math.e, -lambda_t)
+            p = pow(self.lambda_t, n) / math.factorial(n) * pow(math.e, -self.lambda_t)
             n_theories.append(p * n_sum)
 
         self.uniqueList[:] = [n - n / self.SEPARATION for n in n_theories]
@@ -118,8 +117,12 @@ class Part2:
 
 
 laba3 = Part2()
-laba3.figure()
+# print(laba3.flow)
+print('lambda теориритическое: ' + str(laba3.lambda_t))
+print('N теоритическое: ' + str(laba3.theoreticalN))
+print('Хи квадрат: ' + str(laba3.chi_squared()))
 if laba3.hypothesis():
     print('Гипотеза о пуассоновском потоке принимается')
 else:
     print('Гипотеза о пуассоновском потоке отвергается')
+laba3.figure()
